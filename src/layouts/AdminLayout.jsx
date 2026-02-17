@@ -1,9 +1,10 @@
 import { Outlet } from "react-router-dom";
+import SideBar from "../components/SideBar";
 
 const AdminLayout = () => {
   return (
     <div>
-      <h2>Admin</h2>
+      <SideBar />
       <Outlet />
     </div>
   );
