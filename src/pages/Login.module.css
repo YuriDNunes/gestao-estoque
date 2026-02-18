@@ -45,7 +45,7 @@
 
 .input:focus {
   outline: none;
-  border-color: #3182ce; /* Cor de destaque (Azul padrão) */
+  border-color: #3182ce;
   box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
 }
 
