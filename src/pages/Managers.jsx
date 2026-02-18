@@ -7,7 +7,13 @@ const Managers = () => {
       <div className={styles.formCard}>
         <Form />
       </div>
-      <div>Managers list</div>
+      <div className={styles.list}>
+        <div className={styles.container}>
+          <p>id / nome / email / num_id / role / acesso</p>
+          <p>id / nome / email / num_id / role / acesso</p>
+          <p>id / nome / email / num_id / role / acesso</p>
+        </div>
+      </div>
     </div>
   );
 };
