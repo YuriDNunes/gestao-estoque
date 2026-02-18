@@ -2,19 +2,22 @@ import { NavLink } from "react-router-dom";
 import styles from "./SideBar.module.css";
 
 const SideBar = () => {
+  const getLinkClass = ({ isActive }) =>
+    isActive ? `${styles.NavLink} ${styles.active}` : styles.NavLink;
+
   return (
     <div className={styles.SideBar}>
       <nav className={styles.nav}>
-        <NavLink to="dashboard" className={styles.NavLink.active}>
+        <NavLink to="/admin/dashboard" className={getLinkClass}>
           Dashboard
         </NavLink>
-        <NavLink to="managers" className={styles.NavLink}>
+        <NavLink to="/admin/managers" className={getLinkClass}>
           Managers
         </NavLink>
-        <NavLink to="users" className={styles.NavLink}>
+        <NavLink to="/admin/users" className={getLinkClass}>
           Users
         </NavLink>
-        <NavLink to="products" className={styles.NavLink}>
+        <NavLink to="/admin/products" className={getLinkClass}>
           Products
         </NavLink>
       </nav>
