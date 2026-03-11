@@ -4,8 +4,6 @@ import { createBrowserRouter, RouterProvider, Route } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 
-import "./styles/Global.css";
-
 import AuthLayout from "./layouts/AuthLayout.jsx";
 import Login from "./pages/Login.jsx";
 import AdminLayout from "./layouts/AdminLayout.jsx";
