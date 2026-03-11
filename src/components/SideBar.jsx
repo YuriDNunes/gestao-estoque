@@ -1,27 +1,86 @@
-import { NavLink } from "react-router-dom";
-import styles from "./SideBar.module.css";
+import { useLocation, useNavigate } from "react-router-dom";
+import Drawer from "@mui/material/Drawer";
+import Box from "@mui/material/Box";
+import List from "@mui/material/List";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
+import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
+import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
+import Inventory2RoundedIcon from "@mui/icons-material/Inventory2Rounded";
+import { useState } from "react";
+import IconButton from "@mui/material/IconButton";
+import MenuOpenRoundedIcon from "@mui/icons-material/MenuOpenRounded";
+import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
+
+export const DRAWER_WIDTH = 240;
+export const DRAWER_WIDTH_CLOSED = 65;
 
 const SideBar = () => {
-  const getLinkClass = ({ isActive }) =>
-    isActive ? `${styles.NavLink} ${styles.active}` : styles.NavLink;
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(true);
 
   return (
-    <div className={styles.SideBar}>
-      <nav className={styles.nav}>
-        <NavLink to="/admin/dashboard" className={getLinkClass}>
-          Dashboard
-        </NavLink>
-        <NavLink to="/admin/managers" className={getLinkClass}>
-          Managers
-        </NavLink>
-        <NavLink to="/admin/users" className={getLinkClass}>
-          Users
-        </NavLink>
-        <NavLink to="/admin/products" className={getLinkClass}>
-          Products
-        </NavLink>
-      </nav>
-    </div>
+    <Drawer
+      variant="permanent"
+      anchor="left"
+      sx={{
+        width: open ? DRAWER_WIDTH : DRAWER_WIDTH_CLOSED,
+        "& .MuiDrawer-paper": {
+          width: open ? DRAWER_WIDTH : DRAWER_WIDTH_CLOSED,
+          overflowX: "hidden",
+          transition: "width 0.2s ease",
+        },
+      }}
+    >
+      <Box sx={{ width: open ? DRAWER_WIDTH : DRAWER_WIDTH_CLOSED }}>
+        <Box sx={{ display: "flex", justifyContent: "flex-end", p: 1 }}>
+          <IconButton onClick={() => setOpen(!open)}>
+            {open ? <MenuOpenRoundedIcon /> : <MenuRoundedIcon />}
+          </IconButton>
+        </Box>
+        <List>
+          <ListItemButton
+            selected={location.pathname === "/admin/dashboard"}
+            onClick={() => navigate("/admin/dashboard")}
+          >
+            <ListItemIcon>
+              <DashboardRoundedIcon />
+            </ListItemIcon>
+            <ListItemText primary="Dashboard" />
+          </ListItemButton>
+          <ListItemButton
+            selected={location.pathname === "/admin/managers"}
+            onClick={() => navigate("/admin/managers")}
+          >
+            <ListItemIcon>
+              <PeopleAltRoundedIcon />
+            </ListItemIcon>
+            <ListItemText primary="managers" />
+          </ListItemButton>
+          <ListItemButton
+            selected={location.pathname === "/admin/users"}
+            onClick={() => navigate("/admin/users")}
+          >
+            <ListItemIcon>
+              <PersonRoundedIcon />
+            </ListItemIcon>
+            <ListItemText primary="users" />
+          </ListItemButton>
+          <ListItemButton
+            selected={location.pathname === "/admin/products"}
+            onClick={() => navigate("/admin/products")}
+          >
+            <ListItemIcon>
+              <Inventory2RoundedIcon />
+            </ListItemIcon>
+            <ListItemText primary="products" />
+          </ListItemButton>
+        </List>
+      </Box>
+    </Drawer>
   );
 };
 
