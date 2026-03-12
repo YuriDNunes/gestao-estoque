@@ -1,5 +1,8 @@
 import { Outlet } from "react-router-dom";
-import SideBar from "../components/SideBar";
+import SideBar, {
+  DRAWER_WIDTH,
+  DRAWER_WIDTH_CLOSED,
+} from "../components/SideBar";
 import { useState } from "react";
 import Box from "@mui/material/Box";
 
@@ -11,7 +14,7 @@ const AdminLayout = () => {
       <SideBar open={open} onToggle={() => setOpen(!open)} />
       <Box
         sx={{
-          ml: open ? "3rem" : "-6rem",
+          ml: open ? `${DRAWER_WIDTH}px` : `${DRAWER_WIDTH_CLOSED}px`,
           transition: "margin 0.2s ease",
         }}
       >
