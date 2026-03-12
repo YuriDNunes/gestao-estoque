@@ -9,7 +9,6 @@ import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
 import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import Inventory2RoundedIcon from "@mui/icons-material/Inventory2Rounded";
-import { useState } from "react";
 import IconButton from "@mui/material/IconButton";
 import MenuOpenRoundedIcon from "@mui/icons-material/MenuOpenRounded";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
@@ -17,10 +16,9 @@ import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 export const DRAWER_WIDTH = 240;
 export const DRAWER_WIDTH_CLOSED = 65;
 
-const SideBar = () => {
+const SideBar = ({ open, onToggle }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [open, setOpen] = useState(true);
 
   return (
     <Drawer
@@ -37,7 +35,7 @@ const SideBar = () => {
     >
       <Box sx={{ width: open ? DRAWER_WIDTH : DRAWER_WIDTH_CLOSED }}>
         <Box sx={{ display: "flex", justifyContent: "flex-end", p: 1 }}>
-          <IconButton onClick={() => setOpen(!open)}>
+          <IconButton onClick={onToggle}>
             {open ? <MenuOpenRoundedIcon /> : <MenuRoundedIcon />}
           </IconButton>
         </Box>
