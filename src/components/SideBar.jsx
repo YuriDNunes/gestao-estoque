@@ -56,7 +56,7 @@ const SideBar = ({ open, onToggle }) => {
             <ListItemIcon>
               <PeopleAltRoundedIcon />
             </ListItemIcon>
-            <ListItemText primary="managers" />
+            <ListItemText primary="Gestores" />
           </ListItemButton>
           <ListItemButton
             selected={location.pathname === "/admin/users"}
@@ -65,7 +65,7 @@ const SideBar = ({ open, onToggle }) => {
             <ListItemIcon>
               <PersonRoundedIcon />
             </ListItemIcon>
-            <ListItemText primary="users" />
+            <ListItemText primary="Usuários" />
           </ListItemButton>
           <ListItemButton
             selected={location.pathname === "/admin/products"}
@@ -74,7 +74,7 @@ const SideBar = ({ open, onToggle }) => {
             <ListItemIcon>
               <Inventory2RoundedIcon />
             </ListItemIcon>
-            <ListItemText primary="products" />
+            <ListItemText primary="Produtos" />
           </ListItemButton>
         </List>
       </Box>
