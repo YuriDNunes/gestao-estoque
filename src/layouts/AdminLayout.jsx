@@ -15,7 +15,7 @@ const AdminLayout = () => {
       <Box
         sx={{
           ml: open ? `${DRAWER_WIDTH}px` : `${DRAWER_WIDTH_CLOSED}px`,
-          transition: "margin 0.2s ease",
+          transition: "margin 0.4s ease",
         }}
       >
         <Outlet />
