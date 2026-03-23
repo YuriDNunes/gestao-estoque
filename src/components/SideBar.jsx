@@ -29,12 +29,18 @@ const SideBar = ({ open, onToggle }) => {
         "& .MuiDrawer-paper": {
           width: open ? DRAWER_WIDTH : DRAWER_WIDTH_CLOSED,
           overflowX: "hidden",
-          transition: "width 0.2s ease",
+          transition: "width 0.4s ease",
         },
       }}
     >
       <Box sx={{ width: open ? DRAWER_WIDTH : DRAWER_WIDTH_CLOSED }}>
-        <Box sx={{ display: "flex", justifyContent: "flex-end", p: 1 }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: open ? "flex-end" : "flex-start",
+            p: 1,
+          }}
+        >
           <IconButton onClick={onToggle}>
             {open ? <MenuOpenRoundedIcon /> : <MenuRoundedIcon />}
           </IconButton>
