@@ -13,7 +13,7 @@ import IconButton from "@mui/material/IconButton";
 import MenuOpenRoundedIcon from "@mui/icons-material/MenuOpenRounded";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 
-export const DRAWER_WIDTH = 240;
+export const DRAWER_WIDTH = 180;
 export const DRAWER_WIDTH_CLOSED = 65;
 
 const SideBar = ({ open, onToggle }) => {
