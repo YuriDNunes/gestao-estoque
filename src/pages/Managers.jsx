@@ -19,14 +19,15 @@ import DialogContent from "@mui/material/DialogContent";
 import TextField from "@mui/material/TextField";
 import DialogActions from "@mui/material/DialogActions";
 import EditIcon from "@mui/icons-material/Edit";
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const Managers = () => {
   const [open, setOpen] = useState(false);
   const [managers, setManagers] = useState([]);
-  const [register, setRegister] = useState("");
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const initialFormState = { register: "", name: "", email: "" };
+  const [formData, setFormData] = useState(initialFormState);
+  const [selectedManager, setSelectedManager] = useState(null);
 
   useEffect(() => {
     getUsers();
@@ -36,22 +37,60 @@ const Managers = () => {
     setOpen(true);
   };
 
+  const handleCreateClick = () => {
+    if (selectedManager) {
+      setFormData(initialFormState);
+      setSelectedManager(null);
+    }
+    handleOpen();
+  };
+
   const handleClose = () => {
     setOpen(false);
   };
 
+  //função para capturar o gerente que vai ser editado
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  //função para o botao de edição e para o gerente ser guardado
+  const handleEditClick = (manager) => {
+    setSelectedManager(manager);
+    setFormData({
+      register: manager.register,
+      name: manager.name,
+      email: manager.email,
+    });
+    handleOpen();
+  };
+
+  //função para o form ser submetido
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    if (!selectedManager) {
+      postUser();
+    } else {
+      putUser();
+    }
+  };
+
+  //função para criar um usuário
+  async function postUser() {
     try {
       const response = await fetch("http://localhost:8080/api/user", {
         method: "POST",
 
         body: JSON.stringify({
-          name: name,
-          email: email,
-          register: register,
-          password: password,
+          name: formData.name,
+          email: formData.email,
+          register: formData.register,
+          password: "mock",
           access: true,
           role: "Gestor",
         }),
@@ -62,10 +101,7 @@ const Managers = () => {
       });
 
       if (response.ok) {
-        setName("");
-        setEmail("");
-        setRegister("");
-        setPassword("");
+        setFormData(initialFormState);
 
         handleClose();
         getUsers();
@@ -75,8 +111,45 @@ const Managers = () => {
     } catch (error) {
       console.error(error.message);
     }
-  };
+  }
 
+  //função para atualizar um usuário
+  async function putUser() {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/user/${selectedManager.id}`,
+        {
+          method: "PUT",
+
+          body: JSON.stringify({
+            name: formData.name,
+            email: formData.email,
+            register: formData.register,
+            password: "mock",
+            access: true,
+            role: "Gestor",
+          }),
+
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+          },
+        },
+      );
+
+      if (response.ok) {
+        setFormData(initialFormState);
+
+        handleClose();
+        getUsers();
+      } else {
+        console.error("Erro ao cadastrar");
+      }
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+
+  //Função para listar os usuários
   async function getUsers() {
     const url = "http://localhost:8080/api/user?role=Gestor";
 
@@ -110,7 +183,7 @@ const Managers = () => {
         <Button
           variant="contained"
           startIcon={<AddRoundedIcon />}
-          onClick={handleOpen}
+          onClick={handleCreateClick}
         >
           Criar
         </Button>
@@ -129,8 +202,8 @@ const Managers = () => {
               type="text"
               variant="standard"
               fullWidth
-              value={register}
-              onChange={(e) => setRegister(e.target.value)}
+              value={formData.register}
+              onChange={handleChange}
             />
             <TextField
               autoFocus
@@ -141,8 +214,8 @@ const Managers = () => {
               type="text"
               variant="standard"
               fullWidth
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={formData.name}
+              onChange={handleChange}
             />
             <TextField
               autoFocus
@@ -153,20 +226,8 @@ const Managers = () => {
               type="email"
               variant="standard"
               fullWidth
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <TextField
-              autoFocus
-              required
-              id="password"
-              name="password"
-              label="Senha para acesso do funcionário"
-              type="text"
-              variant="standard"
-              fullWidth
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={formData.email}
+              onChange={handleChange}
             />
           </form>
         </DialogContent>
@@ -204,6 +265,9 @@ const Managers = () => {
               <TableCell sx={{ fontWeight: "bold", fontSize: 20 }}>
                 Acesso
               </TableCell>
+              <TableCell sx={{ fontWeight: "bold", fontSize: 20 }}>
+                Ações
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -222,7 +286,12 @@ const Managers = () => {
                   />
                 </TableCell>
                 <TableCell>
-                  <EditIcon />
+                  <IconButton
+                    color="primary"
+                    onClick={() => handleEditClick(manager)}
+                  >
+                    <EditIcon />
+                  </IconButton>
                 </TableCell>
               </TableRow>
             ))}
