@@ -21,6 +21,12 @@ import DialogActions from "@mui/material/DialogActions";
 import EditIcon from "@mui/icons-material/Edit";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
+import {
+  createManagers,
+  deleteManager,
+  fetchManagers,
+  updateManager,
+} from "../services/ManagerServices";
 
 const Managers = () => {
   const [open, setOpen] = useState(false);
@@ -91,31 +97,10 @@ const Managers = () => {
   //função para criar um usuário
   async function postUser() {
     try {
-      const response = await fetch("http://localhost:8080/api/user", {
-        method: "POST",
-
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          register: formData.register,
-          password: "mock",
-          access: true,
-          role: "Gestor",
-        }),
-
-        headers: {
-          "Content-type": "application/json; charset=UTF-8",
-        },
-      });
-
-      if (response.ok) {
-        setFormData(initialFormState);
-
-        handleClose();
-        getUsers();
-      } else {
-        console.error("Erro ao cadastrar");
-      }
+      await createManagers(formData);
+      setFormData(initialFormState);
+      handleClose();
+      getUsers();
     } catch (error) {
       console.error(error.message);
     }
@@ -124,56 +109,21 @@ const Managers = () => {
   //função para atualizar um usuário
   async function putUser() {
     try {
-      const response = await fetch(
-        `http://localhost:8080/api/user/${selectedManager.id}`,
-        {
-          method: "PUT",
-
-          body: JSON.stringify({
-            name: formData.name,
-            email: formData.email,
-            register: formData.register,
-            password: "mock",
-            access: true,
-            role: "Gestor",
-          }),
-
-          headers: {
-            "Content-type": "application/json; charset=UTF-8",
-          },
-        },
-      );
-
-      if (response.ok) {
-        setFormData(initialFormState);
-
-        handleClose();
-        getUsers();
-      } else {
-        console.error("Erro ao cadastrar");
-      }
+      await updateManager(selectedManager.id, formData);
+      setFormData(initialFormState);
+      handleClose();
+      getUsers();
     } catch (error) {
       console.error(error.message);
     }
   }
 
   async function deleteUser() {
-    const url = `http://localhost:8080/api/user/${managerToDelete.id}`;
-
     try {
-      const response = await fetch(url, {
-        method: "DELETE",
-
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.ok) {
-        setManagerToDelete(null);
-        setOpenDeleteDialog(false);
-        getUsers();
-      }
+      await deleteManager(managerToDelete.id);
+      setManagerToDelete(null);
+      setOpenDeleteDialog(false);
+      getUsers();
     } catch (error) {
       console.error(error.message);
     }
@@ -184,15 +134,9 @@ const Managers = () => {
     const url = "http://localhost:8080/api/user?role=Gestor";
 
     try {
-      const response = await fetch(url);
+      const data = await fetchManagers();
 
-      if (!response.ok) {
-        throw new Error(`Response status: ${response.status}`);
-      }
-
-      const result = await response.json();
-
-      setManagers(result);
+      setManagers(data);
     } catch (error) {
       console.error(error.message);
     }
