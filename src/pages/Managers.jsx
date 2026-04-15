@@ -12,17 +12,25 @@ import Paper from "@mui/material/Paper";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import Divider from "@mui/material/Divider";
 import Chip from "@mui/material/Chip";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import TextField from "@mui/material/TextField";
 import DialogActions from "@mui/material/DialogActions";
-import MenuItem from "@mui/material/MenuItem";
-import Switch from "@mui/material/Switch";
+import EditIcon from "@mui/icons-material/Edit";
 
 const Managers = () => {
   const [open, setOpen] = useState(false);
+  const [managers, setManagers] = useState([]);
+  const [register, setRegister] = useState("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    getUsers();
+  }, []);
 
   const handleOpen = () => {
     setOpen(true);
@@ -32,9 +40,60 @@ const Managers = () => {
     setOpen(false);
   };
 
-  const handleSubmit = (event) => {
-    event.PreventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    try {
+      const response = await fetch("http://localhost:8080/api/user", {
+        method: "POST",
+
+        body: JSON.stringify({
+          name: name,
+          email: email,
+          register: register,
+          password: password,
+          access: true,
+          role: "Gestor",
+        }),
+
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+      });
+
+      if (response.ok) {
+        setName("");
+        setEmail("");
+        setRegister("");
+        setPassword("");
+
+        handleClose();
+        getUsers();
+      } else {
+        console.error("Erro ao cadastrar");
+      }
+    } catch (error) {
+      console.error(error.message);
+    }
   };
+
+  async function getUsers() {
+    const url = "http://localhost:8080/api/user?role=Gestor";
+
+    try {
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      setManagers(result);
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
 
   return (
     <Box sx={{ p: 3 }}>
@@ -70,6 +129,8 @@ const Managers = () => {
               type="text"
               variant="standard"
               fullWidth
+              value={register}
+              onChange={(e) => setRegister(e.target.value)}
             />
             <TextField
               autoFocus
@@ -80,6 +141,8 @@ const Managers = () => {
               type="text"
               variant="standard"
               fullWidth
+              value={name}
+              onChange={(e) => setName(e.target.value)}
             />
             <TextField
               autoFocus
@@ -90,6 +153,20 @@ const Managers = () => {
               type="email"
               variant="standard"
               fullWidth
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <TextField
+              autoFocus
+              required
+              id="password"
+              name="password"
+              label="Senha para acesso do funcionário"
+              type="text"
+              variant="standard"
+              fullWidth
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </form>
         </DialogContent>
@@ -130,48 +207,25 @@ const Managers = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            <TableRow>
-              <TableCell sx={{ fontSize: 18 }}>G001</TableCell>
-              <TableCell sx={{ fontSize: 18 }}>Ana Souza</TableCell>
-              <TableCell sx={{ fontSize: 18 }}>ana@empresa.com</TableCell>
-              <TableCell sx={{ fontSize: 18 }}>Gestor</TableCell>
-              <TableCell>
-                <Chip
-                  label="Liberado"
-                  color="success"
-                  size="small"
-                  sx={{ fontSize: 16, p: 1.5 }}
-                />
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell sx={{ fontSize: 18 }}>G002</TableCell>
-              <TableCell sx={{ fontSize: 18 }}>João Carlos</TableCell>
-              <TableCell sx={{ fontSize: 18 }}>joao@empresa.com</TableCell>
-              <TableCell sx={{ fontSize: 18 }}>Gestor</TableCell>
-              <TableCell>
-                <Chip
-                  label="Liberado"
-                  color="success"
-                  size="small"
-                  sx={{ fontSize: 16, p: 1.5 }}
-                />
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell sx={{ fontSize: 18 }}>G003</TableCell>
-              <TableCell sx={{ fontSize: 18 }}>Zé Alexandre</TableCell>
-              <TableCell sx={{ fontSize: 18 }}>ze@empresa.com</TableCell>
-              <TableCell sx={{ fontSize: 18 }}>Gestor</TableCell>
-              <TableCell>
-                <Chip
-                  label="Bloqueado"
-                  color="error"
-                  size="small"
-                  sx={{ fontSize: 16, p: 1.5 }}
-                />
-              </TableCell>
-            </TableRow>
+            {managers.map((manager) => (
+              <TableRow key={manager.id}>
+                <TableCell sx={{ fontSize: 18 }}>{manager.register}</TableCell>
+                <TableCell sx={{ fontSize: 18 }}>{manager.name}</TableCell>
+                <TableCell sx={{ fontSize: 18 }}>{manager.email}</TableCell>
+                <TableCell sx={{ fontSize: 18 }}>{manager.role}</TableCell>
+                <TableCell>
+                  <Chip
+                    label={manager.access ? "Liberado" : "Bloqueado"}
+                    color={manager.access ? "success" : "error"}
+                    size="small"
+                    sx={{ fontSize: 16, p: 1.5 }}
+                  />
+                </TableCell>
+                <TableCell>
+                  <EditIcon />
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </TableContainer>
