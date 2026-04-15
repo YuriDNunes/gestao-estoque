@@ -24,10 +24,12 @@ import DeleteIcon from "@mui/icons-material/Delete";
 
 const Managers = () => {
   const [open, setOpen] = useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [managers, setManagers] = useState([]);
   const initialFormState = { register: "", name: "", email: "" };
   const [formData, setFormData] = useState(initialFormState);
   const [selectedManager, setSelectedManager] = useState(null);
+  const [managerToDelete, setManagerToDelete] = useState(null);
 
   useEffect(() => {
     getUsers();
@@ -67,6 +69,12 @@ const Managers = () => {
       email: manager.email,
     });
     handleOpen();
+  };
+
+  const handleDeleteClick = (manager) => {
+    setManagerToDelete(manager);
+
+    setOpenDeleteDialog(true);
   };
 
   //função para o form ser submetido
@@ -143,6 +151,28 @@ const Managers = () => {
         getUsers();
       } else {
         console.error("Erro ao cadastrar");
+      }
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+
+  async function deleteUser() {
+    const url = `http://localhost:8080/api/user/${managerToDelete.id}`;
+
+    try {
+      const response = await fetch(url, {
+        method: "DELETE",
+
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        setManagerToDelete(null);
+        setOpenDeleteDialog(false);
+        getUsers();
       }
     } catch (error) {
       console.error(error.message);
@@ -292,12 +322,44 @@ const Managers = () => {
                   >
                     <EditIcon />
                   </IconButton>
+                  <IconButton
+                    color="primary"
+                    onClick={() => handleDeleteClick(manager)}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
+
+      <Dialog open={openDeleteDialog}>
+        <DialogTitle>Confirmar Exclusão</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Tem certeza que deseja deletar o gestor{" "}
+            <b>{managerToDelete?.name}</b>?
+          </Typography>
+          Essa ação não pode ser revertida.
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant="contained"
+            onClick={() => {
+              setOpenDeleteDialog(false);
+              setManagerToDelete(null);
+            }}
+          >
+            Cancelar
+          </Button>
+          // TODO: Adicionar onClick para deletar usuário
+          <Button color="error" variant="contained">
+            Deletar
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
