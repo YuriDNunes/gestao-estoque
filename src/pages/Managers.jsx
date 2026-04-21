@@ -27,6 +27,8 @@ import {
   fetchManagers,
   updateManager,
 } from "../services/ManagerServices";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 const Managers = () => {
   const [open, setOpen] = useState(false);
@@ -36,6 +38,11 @@ const Managers = () => {
   const [formData, setFormData] = useState(initialFormState);
   const [selectedManager, setSelectedManager] = useState(null);
   const [managerToDelete, setManagerToDelete] = useState(null);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
 
   useEffect(() => {
     getUsers();
@@ -55,6 +62,13 @@ const Managers = () => {
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSnackbar((prev) => ({ ...prev, open: false }));
   };
 
   //função para capturar o gerente que vai ser editado
@@ -101,8 +115,19 @@ const Managers = () => {
       setFormData(initialFormState);
       handleClose();
       getUsers();
+
+      setSnackbar({
+        open: true,
+        message: "Usuário criado com sucesso!",
+        severity: "success",
+      });
     } catch (error) {
       console.error(error.message);
+      setSnackbar({
+        open: true,
+        message: "Erro ao cadastrar gestor. Tente novamente",
+        severity: "error",
+      });
     }
   }
 
@@ -304,6 +329,21 @@ const Managers = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbar.severity}
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
