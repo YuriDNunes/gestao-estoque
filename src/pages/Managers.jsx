@@ -26,9 +26,11 @@ import {
   deleteManager,
   fetchManagers,
   updateManager,
+  toggleManagerAccess,
 } from "../services/ManagerServices";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import Switch from "@mui/material/Switch";
 
 const Managers = () => {
   const [open, setOpen] = useState(false);
@@ -97,6 +99,25 @@ const Managers = () => {
     setOpenDeleteDialog(true);
   };
 
+  const handleToggleAccess = async (manager) => {
+    try {
+      await toggleManagerAccess(manager.id, !manager.access);
+      getUsers();
+      setSnackbar({
+        open: true,
+        message: manager.access ? "Acesso bloqueado!" : "Acesso liberado!",
+        severity: "success",
+      });
+    } catch (error) {
+      console.error(error.message);
+      setSnackbar({
+        open: true,
+        message: "Erro ao alterar acesso.",
+        severity: "error",
+      });
+    }
+  };
+
   //função para o form ser submetido
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -138,8 +159,18 @@ const Managers = () => {
       setFormData(initialFormState);
       handleClose();
       getUsers();
+      setSnackbar({
+        open: true,
+        message: "Usuário atualizado com sucesso!",
+        severity: "success",
+      });
     } catch (error) {
       console.error(error.message);
+      setSnackbar({
+        open: true,
+        message: "Erro ao atualizar usuário.",
+        severity: "error",
+      });
     }
   }
 
@@ -156,8 +187,6 @@ const Managers = () => {
 
   //Função para listar os usuários
   async function getUsers() {
-    const url = "http://localhost:8080/api/user?role=Gestor";
-
     try {
       const data = await fetchManagers();
 
@@ -244,7 +273,7 @@ const Managers = () => {
 
       <TableContainer
         component={Paper}
-        sx={{ pb: 2, maxHeight: "70vh", textJustify: "center" }}
+        sx={{ pb: 2, maxHeight: "70vh", textJustify: "center", mr: 3 }}
       >
         <Table stickyHeader>
           <TableHead>
@@ -277,6 +306,11 @@ const Managers = () => {
                 <TableCell sx={{ fontSize: 18 }}>{manager.email}</TableCell>
                 <TableCell sx={{ fontSize: 18 }}>{manager.role}</TableCell>
                 <TableCell>
+                  <Switch
+                    checked={manager.access}
+                    onChange={() => handleToggleAccess(manager)}
+                    color="success"
+                  />
                   <Chip
                     label={manager.access ? "Liberado" : "Bloqueado"}
                     color={manager.access ? "success" : "error"}
@@ -323,8 +357,11 @@ const Managers = () => {
           >
             Cancelar
           </Button>
-          // TODO: Adicionar onClick para deletar usuário
-          <Button color="error" variant="contained">
+          <Button
+            color="error"
+            variant="contained"
+            onClick={() => deleteUser()}
+          >
             Deletar
           </Button>
         </DialogActions>

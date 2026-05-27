@@ -17,7 +17,12 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import TextField from "@mui/material/TextField";
 import DialogActions from "@mui/material/DialogActions";
-import { createUser, fetchUsers, updateUser } from "../services/UserServices";
+import {
+  createUser,
+  deleteUser,
+  fetchUsers,
+  updateUser,
+} from "../services/UserServices";
 import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -171,6 +176,26 @@ const Users = () => {
     }
   }
 
+  async function deleteUserHandler() {
+    try {
+      await deleteUser(userToDelete.id);
+      setUserToDelete(null);
+      setOpenDeleteDialog(false);
+      getUsers();
+      setSnackbar({
+        open: true,
+        message: "Usuário deletado com sucesso!",
+        severity: "success",
+      });
+    } catch (error) {
+      setSnackbar({
+        open: true,
+        message: "Erro ao deletar usuário. Tente novamente",
+        severity: "error",
+      });
+    }
+  }
+
   return (
     <Box sx={{ p: 3 }}>
       <Box
@@ -316,8 +341,11 @@ const Users = () => {
           >
             Cancelar
           </Button>
-          {/* TODO: Adicionar onClick para deletar usuário */}
-          <Button color="error" variant="contained">
+          <Button
+            color="error"
+            variant="contained"
+            onClick={() => deleteUserHandler()}
+          >
             Deletar
           </Button>
         </DialogActions>

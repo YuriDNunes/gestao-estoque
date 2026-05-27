@@ -17,13 +17,17 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import TextField from "@mui/material/TextField";
 import { useEffect, useState } from "react";
-import { createProduct } from "../services/ProductServices";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
-import { fetchProducts } from "../services/ProductServices";
 import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import {
+  updateProduct,
+  createProduct,
+  fetchProducts,
+  deleteProduct,
+} from "../services/ProductServices";
 
 const Products = () => {
   const [open, setOpen] = useState(false);
@@ -36,6 +40,8 @@ const Products = () => {
     message: "",
     severity: "success",
   });
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [productToDelete, setProductToDelete] = useState(null);
 
   const handleOpen = () => {
     setOpen(true);
@@ -43,6 +49,14 @@ const Products = () => {
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const handleCreateClick = () => {
+    if (selectedProduct) {
+      setFormData(initialFormState);
+      setSelectedProduct(null);
+    }
+    handleOpen();
   };
 
   const handleCloseSnackbar = (event, reason) => {
@@ -55,14 +69,55 @@ const Products = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    postProduct();
+    if (!selectedProduct) {
+      postProduct();
+    } else {
+      putProduct();
+    }
   };
+
+  const handleEditClick = (product) => {
+    setSelectedProduct(product);
+    setFormData({
+      code: product.code,
+      name: product.name,
+      quantity: product.quantity,
+    });
+    handleOpen();
+  };
+
+  const handleDeleteClick = (product) => {
+    setProductToDelete(product);
+    setOpenDeleteDialog(true);
+  };
+
+  async function deleteProductHandler() {
+    try {
+      await deleteProduct(productToDelete.id);
+      setOpenDeleteDialog(false);
+      setProductToDelete(null);
+      getProducts();
+
+      setSnackbar({
+        open: true,
+        message: "Produto deletado com sucesso",
+        severity: "success",
+      });
+    } catch (error) {
+      setSnackbar({
+        open: true,
+        message: "Erro ao deletar o produto",
+        severity: "error",
+      });
+    }
+  }
 
   async function postProduct() {
     try {
       await createProduct(formData);
       setFormData(initialFormState);
       handleClose();
+      getProducts();
 
       setSnackbar({
         open: true,
@@ -79,6 +134,27 @@ const Products = () => {
     }
   }
 
+  async function putProduct() {
+    try {
+      await updateProduct(selectedProduct.id, formData);
+      setFormData(initialFormState);
+      handleClose();
+      getProducts();
+
+      setSnackbar({
+        open: true,
+        message: "Produto atualizado com sucesso",
+        severity: "success",
+      });
+    } catch (error) {
+      setSnackbar({
+        open: true,
+        message: "Erro ao atualizar o produto",
+        severity: "error",
+      });
+    }
+  }
+
   async function getProducts() {
     try {
       const data = await fetchProducts();
@@ -87,7 +163,7 @@ const Products = () => {
       console.error(error.message);
       setSnackbar({
         open: true,
-        message: "Erro ao carregar lista de usuários",
+        message: "Erro ao carregar lista de produtos",
         severity: "error",
       });
     }
@@ -120,7 +196,7 @@ const Products = () => {
         <Button
           variant="contained"
           startIcon={<AddRoundedIcon />}
-          onClick={handleOpen}
+          onClick={handleCreateClick}
         >
           Novo produto
         </Button>
@@ -205,10 +281,16 @@ const Products = () => {
                 <TableCell sx={{ fontSize: 18 }}>{product.name}</TableCell>
                 <TableCell sx={{ fontSize: 18 }}>{product.quantity}</TableCell>
                 <TableCell>
-                  <IconButton>
+                  <IconButton
+                    color="primary"
+                    onClick={() => handleEditClick(product)}
+                  >
                     <EditIcon />
                   </IconButton>
-                  <IconButton>
+                  <IconButton
+                    color="primary"
+                    onClick={() => handleDeleteClick(product)}
+                  >
                     <DeleteIcon />
                   </IconButton>
                 </TableCell>
@@ -217,6 +299,36 @@ const Products = () => {
           </TableBody>
         </Table>
       </TableContainer>
+
+      <Dialog open={openDeleteDialog}>
+        <DialogTitle>Confirmar Exclusão</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Tem certeza que deseja deletar o produto{" "}
+            <b>{productToDelete?.name}</b>?
+          </Typography>
+          Essa ação não pode ser revertida.
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant="contained"
+            onClick={() => {
+              setOpenDeleteDialog(false);
+              setProductToDelete(null);
+            }}
+          >
+            Cancelar
+          </Button>
+          <Button
+            color="error"
+            variant="contained"
+            onClick={() => deleteProductHandler()}
+          >
+            Deletar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       <Snackbar
         open={snackbar.open}
         autoHideDuration={6000}

@@ -59,3 +59,16 @@ export const deleteManager = async (id) => {
   if (!response.ok) throw new Error("Erro ao deletar gestor");
   return response;
 };
+
+export const toggleManagerAccess = async (id, access) => {
+  const response = await fetch(`${API_URL}/${id}/access`, {
+    method: "PATCH",
+    body: JSON.stringify({ access }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) throw new Error("Erro ao atualizar acesso do gestor");
+  return response.json();
+};
