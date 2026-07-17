@@ -1,7 +1,14 @@
 const API_URL = "http://localhost:8080/api/product";
 
 export const fetchProducts = async () => {
-  const response = await fetch(API_URL);
+  const token = localStorage.getItem("meu_token_jwt");
+
+  const response = await fetch(API_URL, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   if (!response.ok) {
     throw new Error("Erro ao buscar produtos");
   }
@@ -9,6 +16,8 @@ export const fetchProducts = async () => {
 };
 
 export const createProduct = async (productData) => {
+  const token = localStorage.getItem("meu_token_jwt");
+
   const response = await fetch(API_URL, {
     method: "POST",
 
@@ -20,6 +29,7 @@ export const createProduct = async (productData) => {
 
     headers: {
       "Content-type": "application/json; charset=UTF-8",
+      Authorization: `Bearer ${token}`,
     },
   });
 
@@ -30,6 +40,7 @@ export const createProduct = async (productData) => {
 };
 
 export const updateProduct = async (id, productData) => {
+  const token = localStorage.getItem("meu_token_jwt");
   const response = await fetch(`${API_URL}/${id}`, {
     method: "PUT",
 
@@ -41,6 +52,7 @@ export const updateProduct = async (id, productData) => {
 
     headers: {
       "Content-type": "application/json; charset=UTF-8",
+      Authorization: `Bearer ${token}`,
     },
   });
   if (!response.ok) {
@@ -50,10 +62,12 @@ export const updateProduct = async (id, productData) => {
 };
 
 export const deleteProduct = async (id) => {
+  const token = localStorage.getItem("meu_token_jwt");
   const response = await fetch(`${API_URL}/${id}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
     },
   });
 

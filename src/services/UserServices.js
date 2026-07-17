@@ -1,12 +1,19 @@
 const API_URL = "http://localhost:8080/api/user";
 
 export const fetchUsers = async () => {
-  const response = await fetch(`${API_URL}?role=Usuário`);
+  const token = localStorage.getItem("meu_token_jwt");
+  const response = await fetch(`${API_URL}?role=Usuário`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   if (!response.ok) throw new Error("Erro ao buscar usuários");
   return response.json();
 };
 
 export const createUser = async (userData) => {
+  const token = localStorage.getItem("meu_token_jwt");
   const response = await fetch(API_URL, {
     method: "POST",
 
@@ -21,6 +28,7 @@ export const createUser = async (userData) => {
 
     headers: {
       "Content-type": "application/json; charset=UTF-8",
+      Authorization: `Bearer ${token}`,
     },
   });
   if (!response.ok) throw new Error("Erro ao criar usuário");
@@ -28,6 +36,7 @@ export const createUser = async (userData) => {
 };
 
 export const updateUser = async (id, userData) => {
+  const token = localStorage.getItem("meu_token_jwt");
   const response = await fetch(`${API_URL}/${id}`, {
     method: "PUT",
 
@@ -41,6 +50,7 @@ export const updateUser = async (id, userData) => {
     }),
     headers: {
       "Content-type": "application/json; charset=UTF-8",
+      Authorization: `Bearer ${token}`,
     },
   });
 
@@ -49,10 +59,12 @@ export const updateUser = async (id, userData) => {
 };
 
 export const deleteUser = async (id) => {
+  const token = localStorage.getItem("meu_token_jwt");
   const response = await fetch(`${API_URL}/${id}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
     },
   });
 
