@@ -15,11 +15,38 @@ import Link from "@mui/material/Link";
 const Login = () => {
   const [emailError, setEmailError] = useState(false);
   const navigate = useNavigate();
+  const initialFormState = { email: "", password: "" };
+  const [formData, setFormData] = useState(initialFormState);
 
-  function handleLogin(e) {
+  async function handleLogin(e) {
     e.preventDefault();
+    try {
+      const response = await fetch("http://localhost:8080/auth/signin", {
+        method: "POST",
 
-    navigate("/admin/dashboard");
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+
+        body: JSON.stringify({
+          username: formData.email,
+          password: formData.password,
+        }),
+      });
+
+      if (!response.ok) {
+        setEmailError(true);
+        throw new Error("Credenciais inválidas");
+      }
+
+      const data = await response.json();
+
+      localStorage.setItem("meu_token_jwt", data.accessToken);
+
+      navigate("/admin/dashboard");
+    } catch (e) {
+      console.error("Erro no login: ", e);
+    }
   }
 
   // funçoes para botao de visibilidade da senha
@@ -56,6 +83,10 @@ const Login = () => {
             variant="standard"
             error={emailError}
             helperText={emailError ? "Por favor insira um e-mail válido" : ""}
+            value={formData.email}
+            onChange={(e) =>
+              setFormData({ ...formData, email: e.target.value })
+            }
           />
           <TextField
             required
@@ -78,6 +109,10 @@ const Login = () => {
                 ),
               },
             }}
+            value={formData.password}
+            onChange={(e) =>
+              setFormData({ ...formData, password: e.target.value })
+            }
           />
           <Button variant="contained" type="submit" sx={{ mt: 3 }}>
             Entrar
