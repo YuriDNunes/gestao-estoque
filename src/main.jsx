@@ -12,6 +12,7 @@ import Managers from "./pages/Managers.jsx";
 import Users from "./pages/Users.jsx";
 import Products from "./pages/Products.jsx";
 import theme from "./theme/index.js";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
 const router = createBrowserRouter([
   {
@@ -29,20 +30,41 @@ const router = createBrowserRouter([
     element: <AdminLayout />,
     children: [
       {
-        path: "dashboard",
-        element: <Dashboard />,
+        element: <ProtectedRoute allowedRoles={["ROLE_Admin"]} />,
+        children: [
+          {
+            path: "dashboard",
+            element: <Dashboard />,
+          },
+        ],
       },
       {
-        path: "managers",
-        element: <Managers />,
+        element: (
+          <ProtectedRoute allowedRoles={["ROLE_Admin", "ROLE_Gestor"]} />
+        ),
+        children: [
+          {
+            path: "managers",
+            element: <Managers />,
+          },
+          {
+            path: "users",
+            element: <Users />,
+          },
+        ],
       },
       {
-        path: "users",
-        element: <Users />,
-      },
-      {
-        path: "products",
-        element: <Products />,
+        element: (
+          <ProtectedRoute
+            allowedRoles={["ROLE_Admin", "ROLE_Gestor", "ROLE_Usuário"]}
+          />
+        ),
+        children: [
+          {
+            path: "products",
+            element: <Products />,
+          },
+        ],
       },
     ],
   },
