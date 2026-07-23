@@ -12,6 +12,7 @@ import Inventory2RoundedIcon from "@mui/icons-material/Inventory2Rounded";
 import IconButton from "@mui/material/IconButton";
 import MenuOpenRoundedIcon from "@mui/icons-material/MenuOpenRounded";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
+import { getUserRole } from "../utils/auth";
 
 export const DRAWER_WIDTH = 180;
 export const DRAWER_WIDTH_CLOSED = 65;
@@ -19,6 +20,11 @@ export const DRAWER_WIDTH_CLOSED = 65;
 const SideBar = ({ open, onToggle }) => {
   const location = useLocation();
   const navigate = useNavigate();
+
+  const role = getUserRole();
+
+  const isAdmin = role === "ROLE_Admin";
+  const isManagerOrAdmin = role === "ROLE_Gestor" || role === "ROLE_Admin";
 
   return (
     <Drawer
@@ -46,33 +52,39 @@ const SideBar = ({ open, onToggle }) => {
           </IconButton>
         </Box>
         <List>
-          <ListItemButton
-            selected={location.pathname === "/admin/dashboard"}
-            onClick={() => navigate("/admin/dashboard")}
-          >
-            <ListItemIcon>
-              <DashboardRoundedIcon />
-            </ListItemIcon>
-            <ListItemText primary="Dashboard" />
-          </ListItemButton>
-          <ListItemButton
-            selected={location.pathname === "/admin/managers"}
-            onClick={() => navigate("/admin/managers")}
-          >
-            <ListItemIcon>
-              <PeopleAltRoundedIcon />
-            </ListItemIcon>
-            <ListItemText primary="Gestores" />
-          </ListItemButton>
-          <ListItemButton
-            selected={location.pathname === "/admin/users"}
-            onClick={() => navigate("/admin/users")}
-          >
-            <ListItemIcon>
-              <PersonRoundedIcon />
-            </ListItemIcon>
-            <ListItemText primary="Usuários" />
-          </ListItemButton>
+          {isManagerOrAdmin && (
+            <ListItemButton
+              selected={location.pathname === "/admin/dashboard"}
+              onClick={() => navigate("/admin/dashboard")}
+            >
+              <ListItemIcon>
+                <DashboardRoundedIcon />
+              </ListItemIcon>
+              <ListItemText primary="Dashboard" />
+            </ListItemButton>
+          )}
+          {isAdmin && (
+            <ListItemButton
+              selected={location.pathname === "/admin/managers"}
+              onClick={() => navigate("/admin/managers")}
+            >
+              <ListItemIcon>
+                <PeopleAltRoundedIcon />
+              </ListItemIcon>
+              <ListItemText primary="Gestores" />
+            </ListItemButton>
+          )}
+          {isManagerOrAdmin && (
+            <ListItemButton
+              selected={location.pathname === "/admin/users"}
+              onClick={() => navigate("/admin/users")}
+            >
+              <ListItemIcon>
+                <PersonRoundedIcon />
+              </ListItemIcon>
+              <ListItemText primary="Usuários" />
+            </ListItemButton>
+          )}
           <ListItemButton
             selected={location.pathname === "/admin/products"}
             onClick={() => navigate("/admin/products")}
