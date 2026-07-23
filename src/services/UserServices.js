@@ -2,7 +2,7 @@ const API_URL = "http://localhost:8080/api/user";
 
 export const fetchUsers = async () => {
   const token = localStorage.getItem("meu_token_jwt");
-  const response = await fetch(`${API_URL}?role=Usuário`, {
+  const response = await fetch(`${API_URL}?role=User`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -23,7 +23,7 @@ export const createUser = async (userData) => {
       email: userData.email,
       password: "mock",
       access: true,
-      role: "Usuário",
+      role: "User",
     }),
 
     headers: {

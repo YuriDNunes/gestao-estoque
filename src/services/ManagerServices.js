@@ -3,7 +3,7 @@ const API_URL = "http://localhost:8080/api/user";
 export const fetchManagers = async () => {
   const token = localStorage.getItem("meu_token_jwt");
 
-  const response = await fetch(`${API_URL}?role=Gestor`, {
+  const response = await fetch(`${API_URL}?role=Manager`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -24,7 +24,7 @@ export const createManagers = async (managerData) => {
       email: managerData.email,
       password: "mock",
       access: true,
-      role: "Gestor",
+      role: "Manager",
     }),
 
     headers: {
