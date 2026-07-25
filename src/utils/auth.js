@@ -10,3 +10,8 @@ export const getUserRole = () => {
     return error;
   }
 };
+
+export const logout = () => {
+  localStorage.removeItem("meu_token_jwt");
+  window.location.href = "/";
+};

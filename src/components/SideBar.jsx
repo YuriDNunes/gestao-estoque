@@ -12,7 +12,8 @@ import Inventory2RoundedIcon from "@mui/icons-material/Inventory2Rounded";
 import IconButton from "@mui/material/IconButton";
 import MenuOpenRoundedIcon from "@mui/icons-material/MenuOpenRounded";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
-import { getUserRole } from "../utils/auth";
+import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
+import { getUserRole, logout } from "../utils/auth";
 
 export const DRAWER_WIDTH = 180;
 export const DRAWER_WIDTH_CLOSED = 65;
@@ -24,7 +25,7 @@ const SideBar = ({ open, onToggle }) => {
   const role = getUserRole();
 
   const isAdmin = role === "ROLE_Admin";
-  const isManagerOrAdmin = role === "ROLE_Gestor" || role === "ROLE_Admin";
+  const isManagerOrAdmin = role === "ROLE_Manager" || role === "ROLE_Admin";
 
   return (
     <Drawer
@@ -36,6 +37,8 @@ const SideBar = ({ open, onToggle }) => {
           width: open ? DRAWER_WIDTH : DRAWER_WIDTH_CLOSED,
           overflowX: "hidden",
           transition: "width 0.4s ease",
+          display: "flex",
+          flexDirection: "column",
         },
       }}
     >
@@ -93,6 +96,16 @@ const SideBar = ({ open, onToggle }) => {
               <Inventory2RoundedIcon />
             </ListItemIcon>
             <ListItemText primary="Produtos" />
+          </ListItemButton>
+        </List>
+      </Box>
+      <Box sx={{ mt: "auto" }}>
+        <List>
+          <ListItemButton onClick={logout}>
+            <ListItemIcon>
+              <LogoutRoundedIcon />
+            </ListItemIcon>
+            <ListItemText primary="Sair" />
           </ListItemButton>
         </List>
       </Box>
