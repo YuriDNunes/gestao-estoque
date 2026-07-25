@@ -30,7 +30,9 @@ const router = createBrowserRouter([
     element: <AdminLayout />,
     children: [
       {
-        element: <ProtectedRoute allowedRoles={["ROLE_Admin"]} />,
+        element: (
+          <ProtectedRoute allowedRoles={["ROLE_Admin", "ROLE_Manager"]} />
+        ),
         children: [
           {
             path: "dashboard",
@@ -40,7 +42,7 @@ const router = createBrowserRouter([
       },
       {
         element: (
-          <ProtectedRoute allowedRoles={["ROLE_Admin", "ROLE_Gestor"]} />
+          <ProtectedRoute allowedRoles={["ROLE_Admin", "ROLE_Manager"]} />
         ),
         children: [
           {
@@ -56,7 +58,7 @@ const router = createBrowserRouter([
       {
         element: (
           <ProtectedRoute
-            allowedRoles={["ROLE_Admin", "ROLE_Gestor", "ROLE_Usuário"]}
+            allowedRoles={["ROLE_Admin", "ROLE_Manager", "ROLE_User"]}
           />
         ),
         children: [
