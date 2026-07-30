@@ -28,6 +28,8 @@ import {
   fetchProducts,
   deleteProduct,
 } from "../services/ProductServices";
+import { getUserRole } from "../utils/auth";
+import StockMovementDialog from "../components/StockMovementDialog";
 
 const Products = () => {
   const [open, setOpen] = useState(false);
@@ -42,6 +44,11 @@ const Products = () => {
   });
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
+  const [movementDialog, setMovementDialog] = useState(false);
+
+  const role = getUserRole();
+
+  const isManagerOrAdmin = role === "ROLE_Admin" || role === "ROLE_Manager";
 
   const handleOpen = () => {
     setOpen(true);
@@ -177,6 +184,14 @@ const Products = () => {
     }));
   };
 
+  const handleErrorSnackbar = (message) => {
+    setSnackbar({
+      open: true,
+      message: message,
+      severity: "error",
+    });
+  };
+
   useEffect(() => {
     getProducts();
   }, []);
@@ -193,13 +208,15 @@ const Products = () => {
         <Typography variant="h3" color="text.primary">
           Produtos
         </Typography>
-        <Button
-          variant="contained"
-          startIcon={<AddRoundedIcon />}
-          onClick={handleCreateClick}
-        >
-          Novo produto
-        </Button>
+        {isManagerOrAdmin && (
+          <Button
+            variant="contained"
+            startIcon={<AddRoundedIcon />}
+            onClick={handleCreateClick}
+          >
+            Novo produto
+          </Button>
+        )}
       </Box>
 
       <Dialog open={open} onClose={handleClose}>
@@ -281,18 +298,34 @@ const Products = () => {
                 <TableCell sx={{ fontSize: 18 }}>{product.name}</TableCell>
                 <TableCell sx={{ fontSize: 18 }}>{product.quantity}</TableCell>
                 <TableCell>
-                  <IconButton
-                    color="primary"
-                    onClick={() => handleEditClick(product)}
-                  >
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton
-                    color="primary"
-                    onClick={() => handleDeleteClick(product)}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
+                  {
+                    <Button
+                      variant="contained"
+                      onClick={() => {
+                        setSelectedProduct(product);
+                        setMovementDialog(true);
+                      }}
+                    >
+                      Movimentar
+                    </Button>
+                  }
+
+                  {isManagerOrAdmin && (
+                    <>
+                      <IconButton
+                        color="primary"
+                        onClick={() => handleEditClick(product)}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton
+                        color="primary"
+                        onClick={() => handleDeleteClick(product)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </>
+                  )}
                 </TableCell>
               </TableRow>
             ))}
@@ -344,6 +377,13 @@ const Products = () => {
           {snackbar.message}
         </Alert>
       </Snackbar>
+      <StockMovementDialog
+        open={movementDialog}
+        onClose={() => setMovementDialog(false)}
+        product={selectedProduct}
+        onSuccess={getProducts}
+        onError={handleErrorSnackbar}
+      />
     </Box>
   );
 };

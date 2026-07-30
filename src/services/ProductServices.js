@@ -74,3 +74,25 @@ export const deleteProduct = async (id) => {
   if (!response.ok) throw new Error("Erro ao deletar produto");
   return response;
 };
+
+export const updateProductStock = async (id, quantity) => {
+  const token = localStorage.getItem("meu_token_jwt");
+
+  const response = await fetch(`${API_URL}/${id}/stock`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+
+    body: JSON.stringify({
+      quantity: quantity,
+    }),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.text();
+    throw new Error(errorData || "Erro ao movimentar o produto");
+  }
+  return response;
+};
