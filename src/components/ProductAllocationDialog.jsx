@@ -15,9 +15,9 @@ import { allocateProduct } from "../services/AllocationServices";
 const ProductAllocationDialog = ({ open, onClose, onSuccess, onError }) => {
   const [usersList, setUsersList] = useState([]);
   const [productsList, setProductsList] = useState([]);
-  const [selectedUserId, setSelectedUserId] = useState();
-  const [selectedProductId, setSelectedProductId] = useState();
-  const [quantity, setQuantity] = useState();
+  const [selectedUserId, setSelectedUserId] = useState("");
+  const [selectedProductId, setSelectedProductId] = useState("");
+  const [quantity, setQuantity] = useState("");
 
   const selectedProductObj = productsList.find(
     (p) => p.id === selectedProductId,
@@ -37,7 +37,7 @@ const ProductAllocationDialog = ({ open, onClose, onSuccess, onError }) => {
       setQuantity(0);
       onClose();
     } catch (e) {
-      onError(e);
+      onError(e.message);
     }
   };
 
@@ -113,9 +113,7 @@ const ProductAllocationDialog = ({ open, onClose, onSuccess, onError }) => {
         <Button
           color="success"
           variant="contained"
-          onClick={() =>
-            handleAllocate(selectedUserId, selectedProductId, quantity)
-          }
+          onClick={() => handleAllocate}
         >
           Alocar
         </Button>

@@ -18,6 +18,9 @@ export const allocateProduct = async (allocationData) => {
     }),
   });
 
-  if (!response.ok) throw new Error("Erro ao alocar produto");
+  if (!response.ok) {
+    const errorData = await response.text();
+    throw new Error(errorData || "Quantidade insuficiente no estoque");
+  }
   return response;
 };
