@@ -30,6 +30,7 @@ import {
 } from "../services/ProductServices";
 import { getUserRole } from "../utils/auth";
 import StockMovementDialog from "../components/StockMovementDialog";
+import ProductAllocationDialog from "../components/ProductAllocationDialog";
 
 const Products = () => {
   const [open, setOpen] = useState(false);
@@ -45,6 +46,7 @@ const Products = () => {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
   const [movementDialog, setMovementDialog] = useState(false);
+  const [productAllocationDialog, setProductAllocationDialog] = useState(false);
 
   const role = getUserRole();
 
@@ -302,11 +304,10 @@ const Products = () => {
                     <Button
                       variant="contained"
                       onClick={() => {
-                        setSelectedProduct(product);
-                        setMovementDialog(true);
+                        setProductAllocationDialog(true);
                       }}
                     >
-                      Movimentar
+                      Alocar
                     </Button>
                   }
 
@@ -381,6 +382,12 @@ const Products = () => {
         open={movementDialog}
         onClose={() => setMovementDialog(false)}
         product={selectedProduct}
+        onSuccess={getProducts}
+        onError={handleErrorSnackbar}
+      />
+      <ProductAllocationDialog
+        open={productAllocationDialog}
+        onClose={() => setProductAllocationDialog(false)}
         onSuccess={getProducts}
         onError={handleErrorSnackbar}
       />
