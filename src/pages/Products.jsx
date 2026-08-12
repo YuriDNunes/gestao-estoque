@@ -275,7 +275,7 @@ const Products = () => {
 
       <Divider sx={{ my: 2.5 }} />
 
-      <TableContainer component={Paper} sx={{ pt: 1, pb: 2 }}>
+      <TableContainer component={Paper} sx={{ maxHeight: "85vh" }}>
         <Table>
           <TableHead>
             <TableRow>

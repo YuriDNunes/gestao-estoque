@@ -273,7 +273,7 @@ const Users = () => {
 
       <TableContainer
         component={Paper}
-        sx={{ pb: 2, maxHeight: "70vh", textJustify: "center" }}
+        sx={{ maxHeight: "85vh", textJustify: "center" }}
       >
         <Table stickyHeader>
           <TableHead>

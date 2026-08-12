@@ -273,7 +273,7 @@ const Managers = () => {
 
       <TableContainer
         component={Paper}
-        sx={{ pb: 2, maxHeight: "70vh", textJustify: "center", mr: 3 }}
+        sx={{ maxHeight: "85vh", textJustify: "center" }}
       >
         <Table stickyHeader>
           <TableHead>
