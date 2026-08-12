@@ -9,7 +9,7 @@ const ProtectedRoute = ({ allowedRoles }) => {
   }
 
   if (!allowedRoles.includes(role)) {
-    return <Navigate to={"/admin/products"} replace />;
+    return <Navigate to={"/my-products"} replace />;
   }
 
   return <Outlet />;

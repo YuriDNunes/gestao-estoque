@@ -13,6 +13,7 @@ import Users from "./pages/Users.jsx";
 import Products from "./pages/Products.jsx";
 import theme from "./theme/index.js";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import MyAllocations from "./pages/MyAllocations.jsx";
 
 const router = createBrowserRouter([
   {
@@ -26,10 +27,10 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "/admin",
     element: <AdminLayout />,
     children: [
       {
+        path: "/admin",
         element: (
           <ProtectedRoute allowedRoles={["ROLE_Admin", "ROLE_Manager"]} />
         ),
@@ -38,13 +39,6 @@ const router = createBrowserRouter([
             path: "dashboard",
             element: <Dashboard />,
           },
-        ],
-      },
-      {
-        element: (
-          <ProtectedRoute allowedRoles={["ROLE_Admin", "ROLE_Manager"]} />
-        ),
-        children: [
           {
             path: "managers",
             element: <Managers />,
@@ -53,18 +47,18 @@ const router = createBrowserRouter([
             path: "users",
             element: <Users />,
           },
-        ],
-      },
-      {
-        element: (
-          <ProtectedRoute
-            allowedRoles={["ROLE_Admin", "ROLE_Manager", "ROLE_User"]}
-          />
-        ),
-        children: [
           {
             path: "products",
             element: <Products />,
+          },
+        ],
+      },
+      {
+        element: <ProtectedRoute allowedRoles={["ROLE_User"]} />,
+        children: [
+          {
+            path: "my-products",
+            element: <MyAllocations />,
           },
         ],
       },

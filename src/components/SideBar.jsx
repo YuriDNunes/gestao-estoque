@@ -9,6 +9,7 @@ import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
 import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import Inventory2RoundedIcon from "@mui/icons-material/Inventory2Rounded";
+import ContentPasteRoundedIcon from "@mui/icons-material/ContentPasteRounded";
 import IconButton from "@mui/material/IconButton";
 import MenuOpenRoundedIcon from "@mui/icons-material/MenuOpenRounded";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
@@ -26,6 +27,7 @@ const SideBar = ({ open, onToggle }) => {
 
   const isAdmin = role === "ROLE_Admin";
   const isManagerOrAdmin = role === "ROLE_Manager" || role === "ROLE_Admin";
+  const isStandardUser = role === "ROLE_User";
 
   return (
     <Drawer
@@ -88,15 +90,28 @@ const SideBar = ({ open, onToggle }) => {
               <ListItemText primary="Usuários" />
             </ListItemButton>
           )}
-          <ListItemButton
-            selected={location.pathname === "/admin/products"}
-            onClick={() => navigate("/admin/products")}
-          >
-            <ListItemIcon>
-              <Inventory2RoundedIcon />
-            </ListItemIcon>
-            <ListItemText primary="Produtos" />
-          </ListItemButton>
+          {isManagerOrAdmin && (
+            <ListItemButton
+              selected={location.pathname === "/admin/products"}
+              onClick={() => navigate("/admin/products")}
+            >
+              <ListItemIcon>
+                <Inventory2RoundedIcon />
+              </ListItemIcon>
+              <ListItemText primary="Produtos" />
+            </ListItemButton>
+          )}
+          {isStandardUser && (
+            <ListItemButton
+              selected={location.pathname === "/admin/my-products"}
+              onClick={() => navigate("/admin/my-products")}
+            >
+              <ListItemIcon>
+                <ContentPasteRoundedIcon />
+              </ListItemIcon>
+              <ListItemText primary="Alocações" />
+            </ListItemButton>
+          )}
         </List>
       </Box>
       <Box sx={{ mt: "auto" }}>

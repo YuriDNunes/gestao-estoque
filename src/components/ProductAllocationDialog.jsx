@@ -110,11 +110,7 @@ const ProductAllocationDialog = ({ open, onClose, onSuccess, onError }) => {
         <Button color="error" variant="outlined" onClick={() => onClose(false)}>
           Cancelar
         </Button>
-        <Button
-          color="success"
-          variant="contained"
-          onClick={() => handleAllocate}
-        >
+        <Button color="success" variant="contained" onClick={handleAllocate}>
           Alocar
         </Button>
       </DialogActions>
