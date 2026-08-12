@@ -103,8 +103,8 @@ const SideBar = ({ open, onToggle }) => {
           )}
           {isStandardUser && (
             <ListItemButton
-              selected={location.pathname === "/admin/my-products"}
-              onClick={() => navigate("/admin/my-products")}
+              selected={location.pathname === "/my-products"}
+              onClick={() => navigate("/my-products")}
             >
               <ListItemIcon>
                 <ContentPasteRoundedIcon />
