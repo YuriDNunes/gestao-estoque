@@ -12,7 +12,7 @@ export const allocateProduct = async (allocationData) => {
     },
 
     body: JSON.stringify({
-      userId: allocationData.userId,
+      targetUserId: allocationData.targetUserId,
       productId: allocationData.productId,
       quantity: allocationData.quantity,
     }),

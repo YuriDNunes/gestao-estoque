@@ -14,6 +14,7 @@ import Products from "./pages/Products.jsx";
 import theme from "./theme/index.js";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import MyAllocations from "./pages/MyAllocations.jsx";
+import History from "./pages/History.jsx";
 
 const router = createBrowserRouter([
   {
@@ -50,6 +51,10 @@ const router = createBrowserRouter([
           {
             path: "products",
             element: <Products />,
+          },
+          {
+            path: "history",
+            element: <History />,
           },
         ],
       },

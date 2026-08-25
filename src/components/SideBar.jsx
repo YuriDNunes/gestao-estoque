@@ -101,6 +101,17 @@ const SideBar = ({ open, onToggle }) => {
               <ListItemText primary="Produtos" />
             </ListItemButton>
           )}
+          {isManagerOrAdmin && (
+            <ListItemButton
+              selected={location.pathname === "/admin/history"}
+              onClick={() => navigate("/admin/history")}
+            >
+              <ListItemIcon>
+                <Inventory2RoundedIcon />
+              </ListItemIcon>
+              <ListItemText primary="Histórico" />
+            </ListItemButton>
+          )}
           {isStandardUser && (
             <ListItemButton
               selected={location.pathname === "/my-products"}

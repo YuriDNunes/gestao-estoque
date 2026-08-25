@@ -23,12 +23,19 @@ const ProductAllocationDialog = ({ open, onClose, onSuccess, onError }) => {
     (p) => p.id === selectedProductId,
   );
 
+  console.log(
+    "Valores selecionados -> User ID:",
+    selectedUserId,
+    "Product ID:",
+    selectedProductId,
+  );
+
   const handleAllocate = async () => {
     try {
       await allocateProduct({
-        userId: selectedUserId,
-        productId: selectedProductId,
-        quantity: quantity,
+        targetUserId: Number(selectedUserId),
+        productId: Number(selectedProductId),
+        quantity: Number(quantity),
       });
 
       onSuccess();
